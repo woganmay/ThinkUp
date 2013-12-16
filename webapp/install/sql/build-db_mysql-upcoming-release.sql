@@ -566,13 +566,13 @@ CREATE TABLE tu_videos (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Videos which appear in posts.';
 
 
--- Dump completed on 2013-12-16 10:19:45
+-- Dump completed on 2013-12-16 16:30:16
 
 --
 -- Insert DB Version
 --
 INSERT INTO tu_options (namespace, option_name, option_value, last_updated, created)
-VALUES ('application_options', 'database_version', '2.0-beta.8', NOW(), NOW()); 
+VALUES ('application_options', 'database_version', '2.0-beta.9', NOW(), NOW()); 
 
 --
 -- Insert default plugin(s)

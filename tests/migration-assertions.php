@@ -29,7 +29,7 @@
  *
  * Database migration assertions to test during WebTestOfUpgradeDatabase
  */
-$LATEST_VERSION = '2.0-beta.8';
+$LATEST_VERSION = '2.0-beta.9';
 $TOTAL_MIGRATION_COUNT = 252;
 
 $MIGRATIONS = array(
@@ -1046,8 +1046,94 @@ $MIGRATIONS = array(
 
      /* 2.0-beta.8 */
     '2.0-beta.8' => array(
+        'zip_url' => 'https://thinkup.com/downloads/beta/thinkup-2.0-beta.8.zip',
+        'migrations' => 0,
+    ),
+
+     /* 2.0-beta.9 */
+    '2.0-beta.9' => array(
         'zip_url' => 'file://./build/thinkup.zip',
         'migrations' => 0,
-     )
-
-);
+        'migration_assertions' => array(
+            'sql' => array(
+                array(
+                    // Add tu_users.is_verified field
+                    'query' => 'DESCRIBE tu_users is_verified;',
+                    'match' => "/tinyint\(1\)/",
+                    'column' => 'Type',
+                ),
+                array(
+                    // Create tu_count_history table
+                    'query' => 'DESCRIBE tu_count_history id;',
+                    'match' => "/int\(11\)/",
+                    'column' => 'Type',
+                ),
+                array(
+                    // Drop tu_follower_count table
+                    'query' => 'DESCRIBE tu_follower_count;',
+                    'no_match' => true
+                ),
+                array(
+                    // Add tu_count_history index network_user_id
+                    'query' => "SHOW INDEX FROM tu_count_history WHERE Key_name = 'network_user_id' and Column_name = ".
+                    "'network_user_id' and Non_unique = 1;",
+                    'match' => "/network_user_id/",
+                    'column' => 'Key_name',
+                ),
+                array(
+                    // Add tu_count_history index on post_id
+                    'query' => "SHOW INDEX FROM tu_count_history WHERE Key_name = 'post_id' and Column_name = ".
+                    "'post_id' and Non_unique = 1;",
+                    'match' => "/post_id/",
+                    'column' => 'Key_name',
+                ),
+                array(
+                    // Add tu_count_history index on date
+                    'query' => "SHOW INDEX FROM tu_count_history WHERE Key_name = 'date' and Column_name = ".
+                    "'date' and Non_unique = 1;",
+                    'match' => "/date/",
+                    'column' => 'Key_name',
+                ),
+                array(
+                    // Add tu_instances_twitter.last_reply_id
+                    'query' => "DESCRIBE tu_instances_twitter last_reply_id;",
+                    'match' => "/varchar\(80\)/",
+                    'column' => 'Type',
+                ),
+                array(
+                    // Drop tu_instances_twitter.last_page_fetched_tweets
+                    'query' => "DESCRIBE tu_instances_twitter last_reply_id;",
+                    'no_match' => true
+                ),
+                array(
+                    // Drop tu_instances_twitter.last_page_fetched_tweets
+                    'query' => "DESCRIBE tu_instances_twitter last_page_fetched_replies;",
+                    'no_match' => true
+                ),
+                array(
+                    // Add tu_owners.api_key_private
+                    'query' => "DESCRIBE tu_owners api_key_private;",
+                    'match' => "/varchar\(32\)/",
+                    'column' => 'Type',
+                ),
+                array(
+                    // Add tu_owners.email_notification_frequency
+                    'query' => "DESCRIBE tu_owners email_notification_frequency;",
+                    'match' => "/varchar\(10\)/",
+                    'column' => 'Type',
+                ),
+                array(
+                    // Create tu_photos table
+                    'query' => 'DESCRIBE tu_photos id;',
+                    'match' => "/int\(11\)/",
+                    'column' => 'Type',
+                ),
+                array(
+                    // Add tu_posts.permalink field
+                    'query' => "DESCRIBE tu_posts permalink;",
+                    'match' => "/text/",
+                    'column' => 'Type',
+                ),
+            )
+        )
+    );
